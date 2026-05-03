@@ -1,6 +1,7 @@
 import { db } from "../db";
 import { users, sessions } from "../db/schema";
 import { eq } from "drizzle-orm";
+import { UnauthorizedError } from "../errors/unauthorized-error";
 
 export const registerUser = async (data: typeof users.$inferInsert) => {
   // Check if email already exists
@@ -58,24 +59,18 @@ export const getCurrentUser = async (token: string) => {
     .limit(1);
 
   if (!result) {
-    throw new Error("Unauthorized");
+    throw new UnauthorizedError();
   }
 
   return { data: result };
 };
 
 export const logoutUser = async (token: string) => {
-  const [session] = await db
-    .select()
-    .from(sessions)
-    .where(eq(sessions.token, token))
-    .limit(1);
+  const [result]: any = await db.delete(sessions).where(eq(sessions.token, token));
 
-  if (!session) {
-    throw new Error("Unauthorized");
+  if (result.affectedRows === 0) {
+    throw new UnauthorizedError();
   }
-
-  await db.delete(sessions).where(eq(sessions.token, token));
 
   return { data: "OK" };
 };

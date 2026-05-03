@@ -1,5 +1,4 @@
-import { describe, it, expect, mock } from "bun:test";
-import { Elysia } from "elysia";
+import { mock, describe, it, expect } from "bun:test";
 
 // Mock the database
 mock.module("../db", () => ({
@@ -18,12 +17,13 @@ mock.module("../services/users-service", () => ({
     if (token === "valid-token") {
       return { data: "OK" };
     }
-    throw new Error("Unauthorized");
+    const { UnauthorizedError } = require("../errors/unauthorized-error");
+    throw new UnauthorizedError();
   },
 }));
 
-// Import the route
-import { usersRoute } from "./users-route";
+import { Elysia } from "elysia";
+const { usersRoute } = require("./users-route");
 
 const app = new Elysia().use(usersRoute);
 
