@@ -24,7 +24,42 @@ export const usersRoute = new Elysia({ prefix: "/api" })
     detail: {
       tags: ["Users"],
       summary: "Registrasi Pengguna Baru",
-      description: "Endpoint ini digunakan untuk mendaftarkan akun baru ke dalam sistem."
+      description: "Endpoint ini digunakan untuk mendaftarkan akun baru ke dalam sistem.",
+      responses: {
+        200: {
+          description: "Registrasi Berhasil",
+          content: {
+            "application/json": {
+              schema: t.Object({
+                data: t.String()
+              }),
+              example: { data: "OK" }
+            }
+          }
+        },
+        400: {
+          description: "Bad Request",
+          content: {
+            "application/json": {
+              schema: t.Object({
+                error: t.String()
+              }),
+              example: { error: "email sudah terdaftar" }
+            }
+          }
+        },
+        500: {
+          description: "Internal Server Error",
+          content: {
+            "application/json": {
+              schema: t.Object({
+                error: t.String()
+              }),
+              example: { error: "Internal Server Error" }
+            }
+          }
+        }
+      }
     }
   })
   .post("/users/login", async ({ body, set }) => {
@@ -46,7 +81,42 @@ export const usersRoute = new Elysia({ prefix: "/api" })
     detail: {
       tags: ["Users"],
       summary: "Login Pengguna",
-      description: "Endpoint ini digunakan untuk melakukan otentikasi pengguna dan mendapatkan token sesi."
+      description: "Endpoint ini digunakan untuk melakukan otentikasi pengguna dan mendapatkan token sesi.",
+      responses: {
+        200: {
+          description: "Login Berhasil",
+          content: {
+            "application/json": {
+              schema: t.Object({
+                data: t.String()
+              }),
+              example: { data: "550e8400-e29b-41d4-a716-446655440000" }
+            }
+          }
+        },
+        401: {
+          description: "Unauthorized",
+          content: {
+            "application/json": {
+              schema: t.Object({
+                error: t.String()
+              }),
+              example: { error: "email atau password salah" }
+            }
+          }
+        },
+        500: {
+          description: "Internal Server Error",
+          content: {
+            "application/json": {
+              schema: t.Object({
+                error: t.String()
+              }),
+              example: { error: "Internal Server Error" }
+            }
+          }
+        }
+      }
     }
   })
   .guard({
@@ -79,7 +149,54 @@ export const usersRoute = new Elysia({ prefix: "/api" })
     detail: {
       tags: ["Users"],
       summary: "Dapatkan Profil Pengguna Saat Ini",
-      description: "Endpoint ini digunakan untuk mendapatkan informasi detail pengguna yang sedang login berdasarkan token."
+      description: "Endpoint ini digunakan untuk mendapatkan informasi detail pengguna yang sedang login berdasarkan token.",
+      responses: {
+        200: {
+          description: "Berhasil mendapatkan profil",
+          content: {
+            "application/json": {
+              schema: t.Object({
+                data: t.Object({
+                  id: t.Any(),
+                  name: t.String(),
+                  email: t.String(),
+                  createdAt: t.Any()
+                })
+              }),
+              example: {
+                data: {
+                  id: 1,
+                  name: "John Doe",
+                  email: "john@example.com",
+                  createdAt: "2023-01-01T00:00:00.000Z"
+                }
+              }
+            }
+          }
+        },
+        401: {
+          description: "Unauthorized",
+          content: {
+            "application/json": {
+              schema: t.Object({
+                error: t.String()
+              }),
+              example: { error: "Unauthorized" }
+            }
+          }
+        },
+        500: {
+          description: "Internal Server Error",
+          content: {
+            "application/json": {
+              schema: t.Object({
+                error: t.String()
+              }),
+              example: { error: "Internal Server Error" }
+            }
+          }
+        }
+      }
     }
   })
   .delete("/users/current", async ({ token, set }) => {
@@ -97,6 +214,41 @@ export const usersRoute = new Elysia({ prefix: "/api" })
     detail: {
       tags: ["Users"],
       summary: "Logout Pengguna",
-      description: "Endpoint ini digunakan untuk mengakhiri sesi pengguna dan membatalkan token."
+      description: "Endpoint ini digunakan untuk mengakhiri sesi pengguna dan membatalkan token.",
+      responses: {
+        200: {
+          description: "Logout Berhasil",
+          content: {
+            "application/json": {
+              schema: t.Object({
+                data: t.String()
+              }),
+              example: { data: "OK" }
+            }
+          }
+        },
+        401: {
+          description: "Unauthorized",
+          content: {
+            "application/json": {
+              schema: t.Object({
+                error: t.String()
+              }),
+              example: { error: "Unauthorized" }
+            }
+          }
+        },
+        500: {
+          description: "Internal Server Error",
+          content: {
+            "application/json": {
+              schema: t.Object({
+                error: t.String()
+              }),
+              example: { error: "Internal Server Error" }
+            }
+          }
+        }
+      }
     }
   });
