@@ -20,7 +20,12 @@ export const usersRoute = new Elysia({ prefix: "/api" })
       name: t.String({ minLength: 3, maxLength: 255 }),
       email: t.String({ format: "email", maxLength: 255 }),
       password: t.String({ minLength: 8, maxLength: 255 }),
-    })
+    }),
+    detail: {
+      tags: ["Users"],
+      summary: "Registrasi Pengguna Baru",
+      description: "Endpoint ini digunakan untuk mendaftarkan akun baru ke dalam sistem."
+    }
   })
   .post("/users/login", async ({ body, set }) => {
     try {
@@ -37,7 +42,12 @@ export const usersRoute = new Elysia({ prefix: "/api" })
     body: t.Object({
       email: t.String(),
       password: t.String(),
-    })
+    }),
+    detail: {
+      tags: ["Users"],
+      summary: "Login Pengguna",
+      description: "Endpoint ini digunakan untuk melakukan otentikasi pengguna dan mendapatkan token sesi."
+    }
   })
   .guard({
     beforeHandle: ({ headers, set }) => {
@@ -65,6 +75,12 @@ export const usersRoute = new Elysia({ prefix: "/api" })
       set.status = 500;
       return { error: "Internal Server Error" };
     }
+  }, {
+    detail: {
+      tags: ["Users"],
+      summary: "Dapatkan Profil Pengguna Saat Ini",
+      description: "Endpoint ini digunakan untuk mendapatkan informasi detail pengguna yang sedang login berdasarkan token."
+    }
   })
   .delete("/users/current", async ({ token, set }) => {
     try {
@@ -76,5 +92,11 @@ export const usersRoute = new Elysia({ prefix: "/api" })
       }
       set.status = 500;
       return { error: "Internal Server Error" };
+    }
+  }, {
+    detail: {
+      tags: ["Users"],
+      summary: "Logout Pengguna",
+      description: "Endpoint ini digunakan untuk mengakhiri sesi pengguna dan membatalkan token."
     }
   });
