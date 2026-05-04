@@ -7,6 +7,7 @@ export const usersRoute = new Elysia({ prefix: "/api" })
     try {
       return await registerUser(body);
     } catch (error: any) {
+      console.error("Registration error:", error);
       if (error.message === "email sudah terdaftar") {
         set.status = 400;
         return { error: error.message };
@@ -16,9 +17,9 @@ export const usersRoute = new Elysia({ prefix: "/api" })
     }
   }, {
     body: t.Object({
-      name: t.String(),
-      email: t.String(),
-      password: t.String(),
+      name: t.String({ minLength: 3, maxLength: 255 }),
+      email: t.String({ format: "email", maxLength: 255 }),
+      password: t.String({ minLength: 8, maxLength: 255 }),
     })
   })
   .post("/users/login", async ({ body, set }) => {
